@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Creative title for creative people. -->
+		<title>Auto Budget</title>
+
+		<!-- Highcharts CDN and fallback -->
+		<script src="https://code.highcharts.com/highcharts.src.js"></script>
+		<script type="text/javascript">
+			window.Highcharts || document.write('<script src="src/js/highcharts/highcharts.js">\x3C/script>')
+		</script>
+
+		<!-- Only support modern browsers for the sake of speedy development -->
+		<script type="module" src="src/js/index.js"></script>
+	</head>
+
+	<!-- Fallback for unsupported web browsers -->
+	<body>
+		<p>Hi! You're using an old, unsupported web browser.</p>
+
+		<p>
+			Please make sure your current browser is up to date to the most recent version, or try using one of the ones
+			linked below to get started with the full web experience. Thank you, and sorry for the inconvenience!
+		</p>
+	</body>
+
+	<footer>
+		<!-- Main view code initialization -->
+		<script type="text/javascript">
+			try {
+				if (init) {
+					init(document.body);
+				}
+			} catch (e) {
+				console.log('init function failed:', e);
+			}
+		</script>
+	</footer>
+</html>
