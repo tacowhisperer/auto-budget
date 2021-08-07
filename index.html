@@ -11,7 +11,7 @@
 		</script>
 
 		<!-- Only support modern browsers for the sake of speedy development -->
-		<script type="module" src="src/js/index.js"></script>
+		<!-- <script type="module" src="src/js/index.js"></script> -->
 	</head>
 
 	<!-- Fallback for unsupported web browsers -->
@@ -26,11 +26,11 @@
 
 	<footer>
 		<!-- Main view code initialization -->
-		<script type="text/javascript">
+		<script type="module">
+			import {init} from './src/js/index.js';
+
 			try {
-				if (init) {
-					init(document.body);
-				}
+				init(document.documentElement, window.Highcharts);
 			} catch (e) {
 				console.log('init function failed:', e);
 			}
