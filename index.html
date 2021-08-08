@@ -9,9 +9,6 @@
 		<script type="text/javascript">
 			window.Highcharts || document.write('<script src="src/js/highcharts/highcharts.js">\x3C/script>')
 		</script>
-
-		<!-- Only support modern browsers for the sake of speedy development -->
-		<!-- <script type="module" src="src/js/index.js"></script> -->
 	</head>
 
 	<!-- Fallback for unsupported web browsers -->
@@ -32,8 +29,72 @@
 			try {
 				init(document.documentElement, window.Highcharts);
 			} catch (e) {
+				// TODO: Add more than just a console error log here lmfao.
 				console.log('init function failed:', e);
 			}
+		</script>
+
+		<!-- Fallback code initialization for browsers that do not support JavaScript modules. -->
+		<script nomodule type="text/javascript">
+			/**
+			 * @author John Resig
+			 *
+			 * Code adapted from:
+			 * https://johnresig.com/projects/flexible-javascript-events/
+			 */
+
+			/**
+			 * Handler function for addEventListener for compatibility with ie8 and earlier.
+			 *
+			 * @param {Element} obj The DOM element that will have an event handler attached to it.
+			 * @param {string} etype The name of the event that will be handled.
+			 * @param {Function} fn The Event handler itself.
+			 */
+			function addEvent(obj, etype, fn) {
+				// If we're on godforsaken ie8 or worse...
+				if (obj.attachEvent) {
+					// Save the handler we're passing to the object itself.
+					obj['e' + etype + fn] = fn;
+
+					// Capture the window.event object that is fired and pass it directly to the handler saved above.
+					obj[type + fn] = function() {obj['e' + etype + fn](window.event);};
+
+					// attachEvent the captured function above for proper execution of added event handler function.
+					obj.attachEvent('on' + etype, obj[type + fn]);
+				}
+
+				// Otherwise, we're all set.
+				else obj.addEventListener(etype, fn, false);
+			}
+
+			/**
+			 * Handler function for removeEventListener for compatibility with ie8 and earlier.
+			 * 
+			 * @param {Element} obj The DOM element that will have an event handler removed from it.
+			 * @param {string} etype The name of the event that will be removed.
+			 * @param {Function} fn The Event handler to be removed.
+			 */
+			function removeEvent(obj, etype, fn) {
+				// If we're on godforsaken ie8 or worse...
+				if (obj.detachEvent) {
+					obj.detachEvent('on' + etype, obj[etype + fn]);
+					obj[etype + fn] = null;
+				}
+
+				// Otherwise, we're all set.
+				else obj.removeEventListener(etype, fn, false);
+			}
+		</script>
+
+		<script nomodule type="text/javascript">
+			/**
+			 * @author tacowhisperer
+			 */
+
+			// Build the fallback homepage for unsupported web browsers.
+			addEvent(window, 'load', function(e) {
+				// TODO: Build a module for this.
+			});
 		</script>
 	</footer>
 </html>
