@@ -194,7 +194,7 @@
 					var pos = supportedBrowsers[browser].ico;
 
 					icoDiv.style.backgroundImage = icoSheet;
-					icoDiv.style.backgroundPosition = '-' + (icoWidth * pos.x) + 'px -' + (icoHeight * pos.y) + 'px';
+					icoDiv.style.backgroundPosition = (icoWidth * pos.x) + 'px ' + (icoHeight * pos.y) + 'px';
 					icoDiv.style.width = icoWidth + 'px';
 					icoDiv.style.height = icoHeight + 'px';
 
