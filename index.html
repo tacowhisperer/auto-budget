@@ -21,15 +21,8 @@
 		</script>
 	</head>
 
-	<!-- Fallback for unsupported web browsers -->
-	<body>
-		<!-- <p>Hi! You're using an old, unsupported web browser.</p>
-
-		<p>
-			Please make sure your current browser is up to date to the most recent version, or try using one of the ones
-			linked below to get started with the full web experience. Thank you, and sorry for the inconvenience!
-		</p> -->
-	</body>
+	<!-- Insert page content here... -->
+	<body></body>
 
 	<footer>
 		<!-- Main view code initialization -->
@@ -45,7 +38,7 @@
 		</script>
 
 		<!-- Fallback code initialization for browsers that do not support JavaScript modules. -->
-		<script type="text/javascript">
+		<script nomodule type="text/javascript">
 			/**
 			 * @author John Resig
 			 *
@@ -111,7 +104,7 @@
 			}
 		</script>
 
-		<script type="text/javascript">
+		<script nomodule type="text/javascript">
 			/**
 			 * @author tacowhisperer
 			 */
@@ -141,34 +134,81 @@
 			 * 
 			 * @param {string} txt The text to add as a text node.
 			 * @param {Element} elem The HTML element to add the text node to.
+			 * @param {string} tag The tag to use for creating the text node. Defaults to 'p';
+			 * @param {string} align The side to align the text. Defaults to 'left';
+			 * @param {string} url The link to attach to the text node. Default behavior is to not add if arg isn't str.
 			 */
-			function addTextNode(txt, elem) {
-				var p = document.createElement('p');
-				p.appendChild(document.createTextNode(txt));
+			function addTextNode(txt, elem, tag, align, url) {
+				var p = document.createElement(tag || 'p');
+				var txtNode = document.createTextNode(txt);
+
+				p.style.textAlign = align || 'left';
+				
+				if (url) {
+					var a = document.createElement('a');
+					a.setAttribute('href', url);
+					a.appendChild(txtNode);
+					p.appendChild(a);
+				} else {
+					p.appendChild(txtNode);
+				}
+
 				elem.appendChild(p);
 			}
 
 			// Build the fallback homepage for unsupported web browsers.
 			addEvent(window, 'load', function(e) {
-				// Set the display of the body to be a table because we're trying to support the ancient stuff here.
-				var body = document.body;
-				body.style.margin = '0';
-				body.style.padding = '0';
-				body.style.fontFamily = 'monospace';
-				body.style.height = '100%';
-				body.style.width = '100%';
+				document.body.style.fontFamily = 'monospace';
 
+				// Create the container that will hold all of the fallback page's content.
 				var container = document.createElement('div');
 				container.style.width = '75%';
-				body.appendChild(container);
-				addTextNode('Hi! You\'re using an old, unsupported web browser.', container);
+
+				// Add the text nodes that display the fallback page's message.
+				addTextNode('Hi! You\'re using an old, unsupported web browser.', container, 'h1');
 				addTextNode('Please make sure that your current browser is up to date to the most recent version, or try using one of the ones linked below to get started with the full web experience.', container);
 				addTextNode('Thank you, and sorry for the inconvenience!', container);
 
-				// Make sure that the container doesn't take up all available screen width for readability.
-				// container.style.width = (0.75 * windowSize().x) + 'px';
+				// Browser icon constants for visually grabbing content.
+				var icoWidth = 64;
+				var icoHeight = 64;
+				var icoSheet = 'url(./src/img/supportedbrowsers.png)';
+				var supportedBrowsers = {
+					'Chrome': {url: 'https://www.google.com/chrome/', ico: {x: 0, y: 0}},
+					'Firefox': {url: 'https://www.mozilla.org/en-US/firefox/new/', ico: {x: 1, y: 0}},
+					'Edge': {url: 'https://www.microsoft.com/en-us/edge', ico: {x: 0, y: 1}}
+				};
+
+				// Containers for the supported browser links
+				var browserLinks = document.createElement('table');
+				var browserLinksBody = document.createElement('tbody');
+				var browserLinksRow = document.createElement('tr');
+				browserLinks.style.margin = '0 auto';
+				browserLinksBody.appendChild(browserLinksRow);
+				browserLinks.appendChild(browserLinksBody);
+
+				// Add the row of links for supported browsers.
+				for (var browser in supportedBrowsers) {
+					var td = document.createElement('td');
+					var icoDiv = document.createElement('div');
+					var pos = supportedBrowsers[browser].ico;
+
+					icoDiv.style.backgroundImage = icoSheet;
+					icoDiv.style.backgroundPosition = '-' + (icoWidth * pos.x) + 'px -' + (icoHeight * pos.y) + 'px';
+					icoDiv.style.width = icoWidth + 'px';
+					icoDiv.style.height = icoHeight + 'px';
+
+					td.style.padding = '10px 20px';
+					td.appendChild(icoDiv);
+					addTextNode(browser, td, 'h3', 'center', supportedBrowsers[browser].url);
+					browserLinksRow.appendChild(td);
+				}
+
+				// Finalize fallback construction by adding the browser links to the main fallback container.
+				container.appendChild(browserLinks);
 
 				// Center the content container after all other elements have been added.
+				document.body.appendChild(container);
 				var containerCenterHandler = centerInWindowHandler(container);
 				containerCenterHandler();
 				addEvent(window, 'resize', containerCenterHandler);
