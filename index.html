@@ -4,6 +4,16 @@
 		<!-- Creative title for creative people. -->
 		<title>Auto Budget</title>
 
+		<!-- Basic universal CSS -->
+		<style type="text/css">
+			html {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+			}
+		</style>
+
 		<!-- Highcharts CDN and fallback -->
 		<script src="https://code.highcharts.com/highcharts.src.js"></script>
 		<script type="text/javascript">
@@ -13,18 +23,18 @@
 
 	<!-- Fallback for unsupported web browsers -->
 	<body>
-		<p>Hi! You're using an old, unsupported web browser.</p>
+		<!-- <p>Hi! You're using an old, unsupported web browser.</p>
 
 		<p>
 			Please make sure your current browser is up to date to the most recent version, or try using one of the ones
 			linked below to get started with the full web experience. Thank you, and sorry for the inconvenience!
-		</p>
+		</p> -->
 	</body>
 
 	<footer>
 		<!-- Main view code initialization -->
 		<script type="module">
-			import {init} from './src/js/index.js';
+			import {init} from './index.js';
 
 			try {
 				init(document.documentElement, window.Highcharts);
@@ -35,7 +45,7 @@
 		</script>
 
 		<!-- Fallback code initialization for browsers that do not support JavaScript modules. -->
-		<script nomodule type="text/javascript">
+		<script type="text/javascript">
 			/**
 			 * @author John Resig
 			 *
@@ -57,10 +67,10 @@
 					obj['e' + etype + fn] = fn;
 
 					// Capture the window.event object that is fired and pass it directly to the handler saved above.
-					obj[type + fn] = function() {obj['e' + etype + fn](window.event);};
+					obj[etype + fn] = function() {obj['e' + etype + fn](window.event);};
 
 					// attachEvent the captured function above for proper execution of added event handler function.
-					obj.attachEvent('on' + etype, obj[type + fn]);
+					obj.attachEvent('on' + etype, obj[etype + fn]);
 				}
 
 				// Otherwise, we're all set.
@@ -84,16 +94,84 @@
 				// Otherwise, we're all set.
 				else obj.removeEventListener(etype, fn, false);
 			}
+
+			/**
+			 * Gets the window width and height in a cross-browser-friendly manner.
+			 * Code adapted from:
+			 * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
+			 * 
+			 * @returns {Object} The width (x) and height (y) of the current state of the window/viewport.
+			 */
+			function windowSize() {
+				var d = document.body || document.getElementsByTagName('body')[0];
+				var width = window.innerWidth || document.documentElement.clientWidth || d.clientWidth;
+				var height = window.innerHeight || document.documentElement.clientHeight || d.clientHeight;
+
+				return {x: width, y: height};
+			}
 		</script>
 
-		<script nomodule type="text/javascript">
+		<script type="text/javascript">
 			/**
 			 * @author tacowhisperer
 			 */
 
+			/**
+			 * Creates an event handler that centers the element provided in the current window.
+			 * 
+			 * @param {Element} elem The HTML element to center in the current window.
+			 * @returns {Function} A fn to feed to an event handler for centering the provided element in the window.
+			 */
+			function centerInWindowHandler(elem) {
+				return function(event) {
+					// Ensure that the element obeys the 'left' and 'right' CSS properties.
+					elem.style.position = 'fixed';
+
+					// Get the current dimensions of the window.
+					var winSize = windowSize();
+					var elemSize = {x: elem.offsetWidth, y: elem.offsetHeight};
+
+					elem.style.top = ((winSize.y - elemSize.y) / 2) + 'px';
+					elem.style.left = ((winSize.x - elemSize.x) / 2) + 'px';
+				}
+			}
+
+			/**
+			 * Adds the specified text as a text node to the provided element.
+			 * 
+			 * @param {string} txt The text to add as a text node.
+			 * @param {Element} elem The HTML element to add the text node to.
+			 */
+			function addTextNode(txt, elem) {
+				var p = document.createElement('p');
+				p.appendChild(document.createTextNode(txt));
+				elem.appendChild(p);
+			}
+
 			// Build the fallback homepage for unsupported web browsers.
 			addEvent(window, 'load', function(e) {
-				// TODO: Build a module for this.
+				// Set the display of the body to be a table because we're trying to support the ancient stuff here.
+				var body = document.body;
+				body.style.margin = '0';
+				body.style.padding = '0';
+				body.style.fontFamily = 'monospace';
+				body.style.height = '100%';
+				body.style.width = '100%';
+
+				var container = document.createElement('div');
+				container.style.width = '75%';
+				body.appendChild(container);
+				addTextNode('Hi! You\'re using an old, unsupported web browser.', container);
+				addTextNode('Please make sure that your current browser is up to date to the most recent version, or try using one of the ones linked below to get started with the full web experience.', container);
+				addTextNode('Thank you, and sorry for the inconvenience!', container);
+
+				// Make sure that the container doesn't take up all available screen width for readability.
+				// container.style.width = (0.75 * windowSize().x) + 'px';
+
+				// Center the content container after all other elements have been added.
+				var containerCenterHandler = centerInWindowHandler(container);
+				containerCenterHandler();
+				addEvent(window, 'resize', containerCenterHandler);
 			});
 		</script>
 	</footer>
