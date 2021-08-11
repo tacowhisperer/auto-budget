@@ -22,15 +22,14 @@
 	</head>
 
 	<!-- Insert page content here... -->
-	<body></body>
-
+	<body>
 	<footer>
 		<!-- Main view code initialization -->
 		<script type="module">
 			import {init} from './index.js';
 
 			try {
-				init(document.documentElement, window.Highcharts);
+				init(document.body, window.Highcharts);
 			} catch (e) {
 				// TODO: Add more than just a console error log here lmfao.
 				console.log('init function failed:', e);
@@ -165,8 +164,8 @@
 				container.style.width = '75%';
 
 				// Add the text nodes that display the fallback page's message.
-				addTextNode('Hi! You\'re using an old, unsupported web browser.', container, 'h1');
-				addTextNode('Please make sure that your current browser is up to date to the most recent version, or try using one of the ones linked below to get started with the full web experience.', container);
+				addTextNode('Hi! You\'re visiting on an unsupported version of a web browser.', container, 'h1');
+				addTextNode('Please make sure that your current browser is up to date to the most recent version, or try using one of the ones linked below to get started with the full web experience. If you\'re already using one of the linked browsers below, please let the developers know about your issue.', container);
 				addTextNode('Thank you, and sorry for the inconvenience!', container);
 
 				// Browser icon constants for visually grabbing content.
@@ -215,4 +214,5 @@
 			});
 		</script>
 	</footer>
+	</body>
 </html>
