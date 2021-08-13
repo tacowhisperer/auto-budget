@@ -20,11 +20,21 @@ export function loader(interface = {}) {
  * @returns {Loader} An instance of a Loader object.
  */
 function Loader(interface) {
-	const int = interface || {read: false, write: false, delete: false};
-
+	// Helper function for printing a simple error message for using unimplemented methods.
 	function error(action) {
 		throw new Error(`Attempted to ${action} a value with an unimplemented Loader method.`);
 	}
+
+	// Helper function that gets the key of an object, or returns false if not available. Works with primitives as well.
+	function get(obj, key) {
+		try {
+			return Reflect.has(obj, key) ? obj[key] : false;
+		} catch (e) {
+			return false;
+		}
+	}
+
+	const int = {read: get(interface, 'read'), write: get(interface, 'write'), delete: get(interface, 'delete')};
 
 	/**
 	 * Reads the given key from storage.
@@ -55,27 +65,5 @@ function Loader(interface) {
 	 */
 	this.delete = async function(key) {
 		return await (int.delete ? int.delete(key) : error('delete'));
-	}
-}
-
-
-var interface = {
-	storage: window.sessionStorage,
-
-	read: async function(key) {
-		try {
-			return this.storage.getItem(key);
-		} catch (e) {
-			return false;
-		}
-	},
-
-	write: async function(key, value) {
-		try {
-			this.storage.setItem(key, value);
-			return true;
-		} catch (e) {
-			return false;
-		}
 	}
 }
