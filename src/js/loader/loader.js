@@ -5,7 +5,7 @@
 /**
  * Factory function for the Loader object which handles communication to and from storage.
  *
- * @param {Object} interface An Object that implements the read and write functionality of the Loader.
+ * @param {Object} interface An Object that implements the read, write, and delete functionality of the Loader.
  * @returns {Loader} A loader object that interfaces with the current system to communicate to and from storage.
  */
 export function loader(interface = {}) {
