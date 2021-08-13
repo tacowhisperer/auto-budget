@@ -28,7 +28,7 @@ function Loader(interface) {
 	// Helper function that gets the key of an object, or returns false if not available. Works with primitives as well.
 	function get(obj, key) {
 		try {
-			return Reflect.has(obj, key) ? obj[key] : false;
+			return obj[key];
 		} catch (e) {
 			return false;
 		}
